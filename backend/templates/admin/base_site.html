@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | ReyHomes CMS{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/reyhomes.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+  <a href="{% url 'admin:index' %}">ReyHomes <span>CMS</span></a>
+</div>
+{% endblock %}
+
+{% block welcome-msg %}
+  Welcome, <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+{% endblock %}

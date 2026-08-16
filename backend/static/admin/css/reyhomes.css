@@ -1,0 +1,16 @@
+/* ReyHomes brand accents on top of django-unfold */
+:root {
+  --rh-navy: #0a1628;
+  --rh-gold: #d8c7a4;
+  --rh-cream: #f5f0e6;
+}
+
+.reyhomes-dashboard .material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+/* Soft focus on primary action cards */
+.reyhomes-dashboard a:focus-visible {
+  outline: 2px solid rgb(140 29 44 / 0.55);
+  outline-offset: 2px;
+}
