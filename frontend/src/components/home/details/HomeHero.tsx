@@ -1,6 +1,4 @@
 "use client";
-
-import Image from "next/image";
 import { useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { BedDouble, Bath, CarFront, ArrowRight, MoveDiagonal } from "lucide-react";
@@ -23,13 +21,12 @@ export default function HomeHero({ home }: Props) {
   return (
     <section className="relative h-[92dvh] min-h-[580px] overflow-hidden bg-[#0A1628]">
       <motion.div style={{ y }} className="absolute inset-0">
-        <Image
+        <img
           src={image}
           alt={home.name}
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="eager"
+          fetchPriority="high"
         />
       </motion.div>
 
