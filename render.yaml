@@ -1,3 +1,111 @@
+⌘K
+⌘J
+
+
+
+reyhomes_complete.zip
+https://reyhomes-yc57.vercel.app/ , https://reyhomes-backend.onrender.com/ fix it
+
+
+Worked for 7m 24s
+Here's what's wrong with the live deploy and how to fix it.
+
+Diagnosis
+Check	Result
+Frontend UI	Loads
+Backend API	Up — /api/designs/ returns 200 with empty results: []
+Home Designs page	Shows “Something went wrong (500)” and 0 residences
+CORS	Broken — no Access-Control-Allow-Origin for your Vercel origin
+Database	Empty — no designs/packages seeded
+Root causes:
+
+Render env still has placeholders
+CORS_ALLOWED_ORIGINS=https://your-frontend.vercel.app
+instead of https://reyhomes-yc57.vercel.app
+Vercel likely missing / wrong NEXT_PUBLIC_API_URL
+Without https://reyhomes-backend.onrender.com, SSR falls back to http://127.0.0.1:8000 → list pages error / empty.
+No content in Postgres until you create it in Django admin.
+Fix (you must do this in the dashboards)
+1. Render → reyhomes-backend → Environment
+Set:
+
+Key	Value
+ALLOWED_HOSTS	reyhomes-backend.onrender.com
+CORS_ALLOWED_ORIGINS	https://reyhomes-yc57.vercel.app
+CSRF_TRUSTED_ORIGINS	https://reyhomes-backend.onrender.com,https://reyhomes-yc57.vercel.app
+Save → Manual Deploy (restart required).
+
+Verify CORS:
+
+curl -s -D - -o /dev/null \
+  -H "Origin: https://reyhomes-yc57.vercel.app" \
+  https://reyhomes-backend.onrender.com/api/designs/ | grep -i access-control
+You want:
+
+access-control-allow-origin: https://reyhomes-yc57.vercel.app
+
+2. Vercel → Project → Environment Variables
+Key	Value
+NEXT_PUBLIC_API_URL	https://reyhomes-backend.onrender.com
+Apply to Production (and Preview). Redeploy the frontend — NEXT_PUBLIC_* is baked in at build time.
+
+3. Seed data
+Open https://reyhomes-backend.onrender.com/admin/
+Log in with the superuser from Render (DJANGO_SUPERUSER_USERNAME / PASSWORD).
+Create at least one Home design with published checked.
+Refresh https://reyhomes-yc57.vercel.app/home-designs
+4. (Recommended) Media
+Free Render wipes local media on every deploy. Configure R2 / S3 / Cloudinary as in DEPLOY.md (USE_S3 or USE_CLOUDINARY).
+
+Package updates
+In the extracted project:
+
+render.yaml — CORS / CSRF / ALLOWED_HOSTS updated to the live hosts
+FIX_DEPLOYMENT.md — same steps in one place
+I can’t change Render/Vercel env vars from here; after you update those two dashboards and redeploy, the error banner and empty lists should clear once content exists in admin.
+
+
+
+
+5 sources
+give my .md files accodingly , and make my read.md attractive
+
+
+Worked for 1m 51s
+Updated your markdown so everything matches the live deploy and the README is presentation-ready.
+
+README.md (rewritten)
+Previously it accidentally contained render.yaml content. It’s now a proper project README with:
+
+Live links (frontend, API, admin)
+Feature list
+Stack table
+Repo layout
+Local quick start (backend + frontend)
+Production checklist with real CORS / Vercel env values
+Links to the other docs
+Short brand line at the bottom
+Other .md files (aligned to live URLs)
+File	Change
+DEPLOY.md	Live URL table at the top; CORS / CSRF / NEXT_PUBLIC_API_URL set to reyhomes-yc57 + reyhomes-backend
+FREE_DEPLOY.md	Same hostnames for CMS, site, Pro, CORS, and API URL
+FIX_DEPLOYMENT.md	Already correct (repair checklist for CORS / API / empty DB)
+ADMIN.md	Left as-is (CMS/Unfold notes; still accurate)
+render.yaml	Already updated earlier with the live CORS/CSRF hosts
+What you still do in dashboards
+Docs alone don’t change Render/Vercel. Apply:
+
+Render — CORS_ALLOWED_ORIGINS + CSRF_TRUSTED_ORIGINS as in FIX_DEPLOYMENT.md, then redeploy
+Vercel — NEXT_PUBLIC_API_URL=https://reyhomes-backend.onrender.com, then redeploy
+Admin — publish at least one design so lists aren’t empty
+Paths under /home/workdir/artifacts/reyhomes_new/: README.md, DEPLOY.md, FREE_DEPLOY.md, FIX_DEPLOYMENT.md.
+
+/
+
+
+
+render.yaml
+render.yaml
 databases:
   - name: reyhomes-db
     plan: free
@@ -34,7 +142,7 @@ services:
         # After first deploy, set this in the dashboard to the exact host shown
         # (e.g. reyhomes-backend-nx6h.onrender.com). settings.py also auto-adds
         # RENDER_EXTERNAL_HOSTNAME so a mismatch no longer causes 400.
-        value: "reyhomes-backend-nx6h.onrender.com"
+        value: "reyhomes-backend.onrender.com"
       - key: DB_NAME
         fromDatabase:
           name: reyhomes-db
@@ -56,10 +164,10 @@ services:
           name: reyhomes-db
           property: port
       - key: CORS_ALLOWED_ORIGINS
-        value: "https://your-frontend.vercel.app"
+        value: "https://reyhomes-yc57.vercel.app"
       - key: CSRF_TRUSTED_ORIGINS
         # Must include backend itself (admin login) + real Vercel frontend URL
-        value: "https://reyhomes-backend-nx6h.onrender.com,https://your-frontend.vercel.app"
+        value: "https://reyhomes-backend.onrender.com,https://reyhomes-yc57.vercel.app"
       - key: SECURE_SSL_REDIRECT
         value: "True"
       - key: SESSION_COOKIE_SECURE
@@ -98,3 +206,4 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
+Vercel Backend Deploy Fix Guide - Grok
