@@ -1,6 +1,4 @@
 "use client";
-
-import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
@@ -55,13 +53,11 @@ export default function HomeGallery({ home }: Props) {
                 onClick={() => open(i)}
                 className="group relative aspect-[16/10] w-full overflow-hidden rounded-3xl border border-[#0A1628]/08 bg-white"
               >
-                <Image
-                  src={img}
-                  alt={`${home.name} – view ${i + 1}`}
-                  fill
-                  className="object-cover transition duration-700 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+                <img
+          src={img}
+          alt={`${home.name} – view ${i + 1}`}
+          className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+        />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition group-hover:bg-black/30">
                   <span className="translate-y-4 text-sm font-medium uppercase tracking-widest text-white opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100">
                     Enlarge
@@ -104,15 +100,15 @@ export default function HomeGallery({ home }: Props) {
                 className="relative max-h-full max-w-full"
                 style={{ scale }}
               >
-                <Image
-                  src={gallery[index]}
-                  alt=""
-                  width={1800}
-                  height={1200}
-                  className="max-h-[80vh] w-auto object-contain"
-                  unoptimized
-                  priority
-                />
+                <img
+          src={gallery[index]}
+          alt=""
+          width={1800}
+          height={1200}
+          className="max-h-[80vh] w-auto object-contain"
+          loading="eager"
+          fetchPriority="high"
+        />
               </motion.div>
             </div>
 
