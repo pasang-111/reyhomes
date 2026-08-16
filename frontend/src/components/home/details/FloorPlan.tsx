@@ -1,6 +1,4 @@
 "use client";
-
-import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Expand, Download, Plus, Minus, RotateCcw, X } from "lucide-react";
@@ -60,13 +58,13 @@ export default function FloorPlan({ home }: Props) {
           <button onClick={() => setOpen(true)} className="group relative w-full">
             <div className="overflow-hidden rounded-[28px] border border-[#0A1628]/08 bg-[#F5F0E6] p-5 shadow-xl transition group-hover:shadow-2xl">
               <div className="relative aspect-[16/13]">
-                <Image
-                  src={home.floorplan || home.floor_plan_url || "/placeholder-floorplan.jpg"}
-                  alt={`${home.name} floor plan`}
-                  fill
-                  className="object-contain p-3"
-                  priority
-                />
+                <img
+          src={home.floorplan || home.floor_plan_url || "/placeholder-floorplan.jpg"}
+          alt={`${home.name} floor plan`}
+          className="absolute inset-0 h-full w-full object-cover object-contain p-3"
+          loading="eager"
+          fetchPriority="high"
+        />
               </div>
             </div>
             <div className="absolute -bottom-5 left-6 flex items-center gap-2 rounded-2xl bg-white px-5 py-2.5 text-sm text-[#0A1628]/70 shadow-lg">
@@ -101,15 +99,15 @@ export default function FloorPlan({ home }: Props) {
                 style={{ scale }}
                 className="origin-center transition-transform duration-200"
               >
-                <Image
-                  src={home.floorplan || home.floor_plan_url || ""}
-                  alt=""
-                  width={1400}
-                  height={900}
-                  className="max-h-[78vh] w-auto object-contain"
-                  unoptimized
-                  priority
-                />
+                <img
+          src={home.floorplan || home.floor_plan_url || ""}
+          alt=""
+          width={1400}
+          height={900}
+          className="max-h-[78vh] w-auto object-contain"
+          loading="eager"
+          fetchPriority="high"
+        />
               </motion.div>
             </div>
 
